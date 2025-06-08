@@ -1,10 +1,13 @@
 package com.spring.criptografia.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 
+@Slf4j
 public class CriptografiaUtil {
 
     private static final String ALGORITIMO = "AES";
@@ -14,8 +17,10 @@ public class CriptografiaUtil {
         try {
             KeyGenerator chavegerador = KeyGenerator.getInstance(ALGORITIMO);
             chavegerador.init(128);
+            log.info("Chave gerada com Sucesso");
             return chavegerador.generateKey();
         } catch (Exception e) {
+            log.error("Erro ao gerar chave encriptada");
             throw new RuntimeException("falha ao gerar chave encriptada",e);
         }
     }
@@ -25,9 +30,12 @@ public class CriptografiaUtil {
             Cipher cipher = Cipher.getInstance(ALGORITIMO);
             cipher.init(Cipher.ENCRYPT_MODE,CHAVE_SECRETA);
             byte[] bytesencriptados = cipher.doFinal(dados.getBytes());
+            log.info("dados encriptados com Sucesso");
             return Base64.getEncoder().encodeToString(bytesencriptados);
 
+
         } catch (Exception e) {
+            log.error("Erro ao encriptar dados");
             throw new RuntimeException("falha ao encriptar os dados",e);
         }
     }
@@ -38,8 +46,10 @@ public class CriptografiaUtil {
             cipher.init(Cipher.DECRYPT_MODE,CHAVE_SECRETA);
             byte[] decodificarBytes = Base64.getDecoder().decode(dadosEncriptador);
             byte[] bytesDecodificados = cipher.doFinal(decodificarBytes);
+            log.info("dados descriptados com Sucesso");
             return  new String(bytesDecodificados);
         } catch (Exception e) {
+            log.error("Erro ao descriptografar dados");
             throw new RuntimeException("Falha ao descriptografar dados",e);
         }
 
