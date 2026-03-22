@@ -29,6 +29,6 @@ public class DadosSensivel {
     private String creditoCardToken;
 
     @Column(name = "valor_credito",nullable = false)
-    private Long valor;
+    private long valor;
 
 }
