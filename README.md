@@ -1,107 +1,169 @@
-# Projeto: API com Criptografia Transparente e Monitoramento
+# Spring Java - Criptografia
 
-## Descrição
+API REST desenvolvida com Java e Spring Boot para trabalhar com dados sensíveis, aplicando criptografia durante a persistência das informações.
 
-Esta API implementa criptografia de forma transparente para os serviços e camadas de persistência, garantindo que campos sensíveis das entidades sejam protegidos em tempo de execução. A criptografia é aplicada automaticamente durante a conversão de entidades para o banco de dados e na leitura dos dados persistidos, evitando a exposição direta de informações sensíveis.
+## Funcionalidades
 
-## Tecnologias Utilizadas
+* Cadastro de dados sensíveis
+* Consulta de dados sensíveis por identificador
+* Atualização de dados sensíveis
+* Exclusão de dados sensíveis
+* Criptografia de informações sensíveis
+* Documentação da API com Swagger/OpenAPI
+* Monitoramento com Spring Boot Actuator
+* Métricas da aplicação
 
-- **Spring Boot**: Framework principal para construção da API.
-- **Lombok (@Slf4j)**: Utilizado para geração  de logs.
-- **Swagger (Springdoc OpenAPI)**: Documentação interativa da API.
-- **Spring Boot Actuator**: Monitoramento da aplicação (health checks, métricas.).
-- **Integração Swagger + Actuator**: Permite exposição e monitoramento via interface Swagger.
-- **H2 Database**: Banco de dados em memória utilizado para testes e desenvolvimento.
-- **Flyway**: Gerenciamento de versionamento e migração do banco de dados.
-- **Cache**: uso de cache local
-- **Tratamento de Exceções** - @RestControllerAdvice
-- **JUnit 5 + Mockito** – Testes Unitarios
-- **Docker** – criação, implantação e gerenciamento de aplicações dentro de contêineres.
+## Tecnologias
+
+* Java 21
+* Spring Boot
+* Spring Web
+* Spring Data JPA
+* H2 Database
+* Spring Boot Actuator
+* Springdoc OpenAPI
+* Maven
+* Docker
 
 ## Requisitos
 
-- Java 21
-- Maven 
+* Java 21
+* Maven
+* Docker (opcional)
 
+## Configuração
 
-## Executando o Projeto
+A aplicação utiliza H2 Database em memória para persistência durante a execução.
 
-1. Clone o repositório:
+Principais configurações:
 
-```bash
-git https://github.com/bispobr/Spring-java-criptografia.git
-```
+| Propriedade                                 | Descrição                               |
+| ------------------------------------------- | --------------------------------------- |
+| `spring.datasource.url`                     | URL do banco H2 em memória              |
+| `spring.datasource.username`                | Usuário utilizado para conexão com o H2 |
+| `spring.datasource.password`                | Senha utilizada para conexão com o H2   |
+| `spring.h2.console.enable`                  | Habilita o console do H2                |
+| `spring.h2.console.path`                    | Caminho do console do H2                |
+| `spring.jpa.hibernate.ddl-auto`             | Estratégia de atualização do schema     |
+| `management.endpoints.web.exposure.include` | Endpoints do Actuator expostos          |
 
+## Executando o projeto
 
-## Como usar
-
-1. Inicie a aplicação 
-2. A API está acessivel atraves do endereço http://localhost:8080/dados-sensivel
-3. A documentação da API está acessível através do Link http://localhost:8080/swagger-ui/index.html#/
-4. O endpoint de saúde e métricas do Actuator está acessível através do Link http://localhost:8080/actuator/health
-
-## Como Rodar em um Container (Opcional)
-
-1. Construa o projeto
-
-```bash
-mvn clean package 
-```
-
-2. Gere a Imagem Docker, com o Docker  instalado execute:
-
+Clone o repositório:
 
 ```bash
-docker build -t criptografia . 
+git clone https://github.com/bispobr/Spring-java-criptografia.git
+cd Spring-java-criptografia
 ```
 
-3. Execute o Container
+Execute com Maven:
+
+```bash
+./mvnw spring-boot:run
+```
+
+No Windows:
+
+```powershell
+mvnw.cmd spring-boot:run
+```
+
+A API estará disponível em:
+
+```text
+http://localhost:8080
+```
+
+## API
+
+### Cadastrar dados sensíveis
+
+```http
+POST /dados-sensivel
+Content-Type: application/json
+```
+
+### Consultar dados por ID
+
+```http
+GET /dados-sensivel/{id}
+```
+
+### Atualizar dados sensíveis
+
+```http
+PUT /dados-sensivel/{id}
+Content-Type: application/json
+```
+
+### Excluir dados sensíveis
+
+```http
+DELETE /dados-sensivel/{id}
+```
+
+Os detalhes dos contratos de entrada e saída podem ser consultados na documentação OpenAPI da aplicação.
+
+## Swagger / OpenAPI
+
+Com a aplicação em execução:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+A documentação também pode ser consultada através da integração do Swagger com o Actuator.
+
+## H2 Console
+
+O console do H2 está disponível em:
+
+```text
+http://localhost:8080/h2-console
+```
+
+## Actuator
+
+Endpoint de saúde:
+
+```text
+http://localhost:8080/actuator/health
+```
+
+Endpoint de métricas:
+
+```text
+http://localhost:8080/actuator/metrics
+```
+
+## Docker
+
+Para gerar o artefato da aplicação:
+
+```bash
+mvn clean package
+```
+
+Para gerar a imagem Docker:
+
+```bash
+docker build -t criptografia .
+```
+
+Para executar o container:
 
 ```bash
 docker run -p 8080:8080 criptografia
 ```
 
+## Testes
 
-## API Endpoints
-A API contem os seguintes endpoints:
+Execute os testes com:
 
-```http request
-POST /dados-sensivel - Inserção de novos registros no banco de dados.
-Content-Type: application/json
-
-{
-  "usuarioDocumento": "xxxxxxxxxxxx",
-  "creditoCardToken": "000000000000",
-  "valor": 00000
-}
+```bash
+mvn test
 ```
 
-| Parâmetro   | Tipo       | Descrição                           |
-| :---------- | :--------- | :---------------------------------- |
-| `usuarioDocumento` | `String` | **Obrigatório**. O nome do produto 
-| `creditoCardToken` | `String` | **Obrigatório**. Dados do cartão 
-| `valor` | `Long` | **Obrigatório**. Valor cartão 
+## Status
 
-```http request
-PUT /dados-sensivel/{id} - Atualização de registros no banco de dados.
-Content-Type: application/json
-
-{
-  "usuarioDocumento": "xxxxxxxxxxxx",
-  "creditoCardToken": "000000000000",
-  "valor": 00000
-}
-```
-
-```http request
-GET /dados-sensivel - Consulta de todos os registros salvos
-```
-
-```http request
-GET /dados-sensivel/{id} - Consulta de todos os registros salvos
-```
-
-```http request
-DELETE /dados-sensivel/{id} - Exclusão de registros do banco de dados
-```
-
+Projeto de estudo desenvolvido para praticar desenvolvimento de APIs REST com Spring Boot, persistência com JPA/H2, tratamento de dados sensíveis e integração com recursos de monitoramento da aplicação.
